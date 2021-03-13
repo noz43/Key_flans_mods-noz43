@@ -1,0 +1,93 @@
+options:
+   prefix: &7[&anon de votre serveur&7]
+   clef: 4553 --Mettre l'id de l'item --
+   lockpick: 4158 --Mettre l'id de l'item --
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+
+
+   
+on right click on entity:
+   if targeted entity is not set:
+      cancel event
+      stop
+   if targeted entity is not player:
+      if targeted entity is villager:
+
+      else:     
+         if {prenom.%targeted entity%} is set:
+            stop
+         if {vehicule.Owner.%targeted entity%} is not set:
+            if player has 1 4553:
+            
+            else:
+               give 1 4553 to player
+            set {vehicule.Owner.%targeted entity%} to player
+            set {vehiculeActu.%targeted entity%} to false
+            send "{@prefix} &2Le Vehicule vous appartient maintenant !"
+            loop all entities in radius 5 around the targeted entity:
+               if {vehicule.Owner.%loop-entity%} is not set:
+                  set {vehicule.Owner.%loop-entity%} to player
+                  set {vehiculeActu.%loop-entity%} to false
+            cancel event
+            stop
+         else:
+            if tool of player is a {@lockpick}:
+               if {vehiculeActu.%targeted entity%} is true:
+                  chance of 50%:
+                     remove 1 {@lockpick} from player's inventory
+                     stop
+                  set {vehiculeActu.%targeted entity%} to false
+                  loop all entities in radius 5 around the targeted entity:
+                     if {vehiculeActu.%loop-entity%} is true:
+                        if {vehicule.Owner.%targeted entity%} = {vehicule.Owner.%loop-entity%}:
+                           set {vehiculeActu.%loop-entity%} to false
+                  remove 1 {@lockpick} from player's inventory
+                  cancel event
+                  send "{@prefix} &2Ouvert !"
+                  stop
+            if tool of player is a {@clef}:
+               cancel event
+               if {vehicule.Owner.%targeted entity%} = player:
+                  if {vehiculeActu.%targeted entity%} is true:
+                     set {vehiculeActu.%targeted entity%} to false
+                     send "{@prefix} &2Vous avez de-verouillée le vehicule !"
+                     loop all entities in radius 5 around the targeted entity:
+                        if {vehicule.Owner.%targeted entity%} = player:
+                           set {vehiculeActu.%loop-entity%} to false
+                     stop      
+                  else:
+                     set {vehiculeActu.%targeted entity%} to true
+                     send "{@prefix} &2Vous avez verouillée le vehicule !"
+                     loop all entities in radius 5 around the targeted entity:
+                        if {vehicule.Owner.%targeted entity%} = player:
+                           set {vehiculeActu.%loop-entity%} to true
+                     stop      
+               else:
+                  send "{@prefix} &cLe Vehicule ne vous appartient pas !"
+                  stop
+            else:
+               if {vehiculeActu.%targeted entity%} is true:
+                  cancel event
+                  send "{@prefix} &cLe Vehicule est Fermée !"
+                  stop
+         
+
+on spawn:
+   if entity is a cow or pig or chicken or horse or sheep:
+      cancel event
